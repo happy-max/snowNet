@@ -1,4 +1,5 @@
 
+using API.Helpers;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddControllers();
 builder.Services.AddDbContext<StoreContext>(options =>
 {
@@ -42,6 +45,8 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "An error occured during migration");
     }
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
