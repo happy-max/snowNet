@@ -1,6 +1,5 @@
 
 using API.Errors;
-using API.Helpers;
 using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -34,23 +33,34 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
         return new BadRequestObjectResult(errorResponse);
     };
 });
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", policy =>
     {
-policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://locallhost:4200");
+        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://locallhost:4200");
     });
 });
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors(builder =>
+{
+    builder
+       .WithOrigins("http://localhost:4200", "https://localhost:4200")
+       .SetIsOriginAllowedToAllowWildcardSubdomains()
+       .AllowAnyHeader()
+       .AllowCredentials()
+       .WithMethods("GET", "PUT", "POST", "DELETE", "OPTIONS")
+       .SetPreflightMaxAge(TimeSpan.FromSeconds(3600));
+}
+);
 
 using (var scope = app.Services.CreateScope())
 {
