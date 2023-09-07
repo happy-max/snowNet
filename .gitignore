@@ -3,3 +3,7 @@ bin
 appsettings.json
 *.db
 *.vscode
+
+.idea
+*.db-shm
+*.db-wal
