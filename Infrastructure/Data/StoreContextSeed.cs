@@ -1,59 +1,43 @@
 using System.Text.Json;
 using Core.Entities;
-using Microsoft.Extensions.Logging;
+using Core.Entities.OrderAggregate;
+using Infrastructure.Data;
 
 namespace Infrastructure.Data
 {
     public class StoreContextSeed
     {
-        public static async Task SeedAsync(StoreContext context, ILoggerFactory loggerFactory)
+        public static async Task SeedAsync(StoreContext context)
         {
-            try
+            if (!context.ProductBrands.Any())
             {
-                if (!context.ProductBrands.Any())
-                {
-                    var brandsData = File.ReadAllText("../Infrastructure/Data/SeedData/brands.json");
-                    var brands = JsonSerializer.Deserialize<List<ProductBrandEntity>>(brandsData);
-
-                    foreach (var item in brands)
-                    {
-                        context.ProductBrands.Add(item);
-                    }
-
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.ProductTypes.Any())
-                {
-                    var typesData = File.ReadAllText("../Infrastructure/Data/SeedData/types.json");
-                    var types = JsonSerializer.Deserialize<List<ProductTypeEntity>>(typesData);
-
-                    foreach (var item in types)
-                    {
-                        context.ProductTypes.Add(item);
-                    }
-
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.Products.Any())
-                {
-                    var productsData = File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
-                    var products = JsonSerializer.Deserialize<List<ProductEntity>>(productsData);
-
-                    foreach (var item in products)
-                    {
-                        context.Products.Add(item);
-                    }
-
-                    await context.SaveChangesAsync();
-                }
+                var brandsData = File.ReadAllText("../Infrastructure/Data/SeedData/brands.json");
+                var brands = JsonSerializer.Deserialize<List<ProductBrandEntity>>(brandsData);
+                context.ProductBrands.AddRange(brands);
             }
-            catch (Exception ex)
+
+            if (!context.ProductTypes.Any())
             {
-                var logger = loggerFactory.CreateLogger<StoreContextSeed>();
-                logger.LogError(ex.Message);
+                var typesData = File.ReadAllText("../Infrastructure/Data/SeedData/types.json");
+                var types = JsonSerializer.Deserialize<List<ProductTypeEntity>>(typesData);
+                context.ProductTypes.AddRange(types);
             }
+
+            if (!context.Products.Any())
+            {
+                var productsData = File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
+                var products = JsonSerializer.Deserialize<List<ProductEntity>>(productsData);
+                context.Products.AddRange(products);
+            }
+
+            if (!context.DeliveryMethods.Any())
+            {
+                var deliveryData = File.ReadAllText("../Infrastructure/Data/SeedData/delivery.json");
+                var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryData);
+                context.DeliveryMethods.AddRange(methods);
+            }
+
+            if (context.ChangeTracker.HasChanges()) await context.SaveChangesAsync();
         }
     }
 }

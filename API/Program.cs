@@ -23,6 +23,8 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
@@ -82,7 +84,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<StoreContext>();
         await context.Database.MigrateAsync();
-        await StoreContextSeed.SeedAsync(context, loggerFactory);
+        await StoreContextSeed.SeedAsync(context);
         await identityContext.Database.MigrateAsync();
         await AppIdentityDbContextSeed.SeedUsersAsync(userManager);
     }
