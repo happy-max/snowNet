@@ -223,7 +223,7 @@ namespace Infrastructure.Data.Migrations
                             b1.Property<int>("ProductItemId")
                                 .HasColumnType("INTEGER");
 
-                            b1.Property<string>("ProductName")
+                            b1.Property<string>("Name")
                                 .HasColumnType("TEXT");
 
                             b1.HasKey("OrderItemId");

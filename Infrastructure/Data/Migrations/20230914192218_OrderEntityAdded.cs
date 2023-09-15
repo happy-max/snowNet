@@ -62,7 +62,7 @@ namespace Infrastructure.Data.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ItemOrdered_ProductItemId = table.Column<int>(type: "INTEGER", nullable: true),
-                    ItemOrdered_ProductName = table.Column<string>(type: "TEXT", nullable: true),
+                    ItemOrdered_Name = table.Column<string>(type: "TEXT", nullable: true),
                     ItemOrdered_PictureUrl = table.Column<string>(type: "TEXT", nullable: true),
                     Price = table.Column<double>(type: "decimal(18,2)", nullable: false),
                     Quantity = table.Column<int>(type: "INTEGER", nullable: false),

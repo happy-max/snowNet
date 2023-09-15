@@ -15,12 +15,13 @@ export interface Order {
     shippingPrice: number;
     orderItems: OrderItem[];
     subtotal: number;
+    total: number;
     status: string;
   }
 
   export interface OrderItem {
     productId: number;
-    productName: string;
+    name: string;
     pictureUrl: string;
     price: number;
     quantity: number;

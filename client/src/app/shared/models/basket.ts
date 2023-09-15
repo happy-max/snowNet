@@ -2,7 +2,7 @@ import * as cuid from 'cuid';
 
 export interface BasketItem {
     id: number;
-    productName: string;
+    name: string;
     price: number;
     quantity: number;
     pictureUrl: string;
