@@ -12,6 +12,7 @@ using Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using API.Extensions;
 using Infrastructure.Data.Identity;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +35,7 @@ builder.Services.AddSwaggerDocumentation();
 builder.Services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 builder.Services.AddDbContext<StoreContext>(options =>
 {
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
 
@@ -99,6 +100,13 @@ using (var scope = app.Services.CreateScope())
 
 app.UseStaticFiles();
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Content")),
+    RequestPath = "/Content"
+});
+
 app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
@@ -108,5 +116,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapFallbackToController("Index", "Fallback");
 
 app.Run();
